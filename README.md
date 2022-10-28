@@ -12,6 +12,11 @@ In this project involed by four students in M2 NLP:
 
 ## Project Structure
 
+## Dataset
+### L1:
+1. [CFPP2000: Parisian French corpus](https://cocoon.huma-num.fr/exist/crdo/meta/cocoon-8bc96a4e-9899-30e4-99be-c72d216eb38b)\n
+2. 
+
 ## Install instructions
 
 ## Datasets
