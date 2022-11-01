@@ -25,6 +25,7 @@ In this project involed by four students in M2 NLP:
 3. [The Newcastle Corpus: British high schoolers learning French](https://slabank.talkbank.org/access/French/Newcastle.html) (can download but need to request)
 4. [TCD Corpus: 5 L2 French children from different countries](https://slabank.talkbank.org/access/French/TCD.html) (can download but need to request)
 5. [The Reading Corpus: 16-year-old Welsh pupils learning French](https://slabank.talkbank.org/access/French/Reading.html) (can download but need to request)
+6. [PAROLE: 40 L2 French students from different countries](https://slabank.talkbank.org/access/English/PAROLE.html) (can download but need to request)
 
 ### Other (not yet discuss:
 1. [librivox](https://librivox.org/search?primary_key=2&search_category=language&search_page=1&search_form=get_results) (audio book)
