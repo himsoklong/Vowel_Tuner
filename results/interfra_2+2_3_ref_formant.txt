@@ -1,5 +1,5 @@
 Corpus: 225 vowels extracted from the InterFra corpus (1 male and 1 female native speakers, 1 make and 1 female non-native speakers)
-Method: Average formant extraction and selection of the closest vowel in formant space using reference vowels from "Reconnaissance de phonèmes par analyse formantique dans le cas de transitions voyelle-consonne"
+Method: Average formant extraction and selection of the closest vowel in 3-dimensional formant space using reference vowels from "Reconnaissance de phonèmes par analyse formantique dans le cas de transitions voyelle-consonne"
 
 Native:
               precision    recall  f1-score   support
