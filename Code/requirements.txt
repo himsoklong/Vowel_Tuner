@@ -1,0 +1,7 @@
+numpy
+pandas
+praat-parselmouth
+scipy
+wave
+git+https://github.com/mwv/praat_formants_python#egg=praat_formants_python
+
