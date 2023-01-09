@@ -1,0 +1,92 @@
+Corpus: 103 vowels extracted from the recording of classmates reading out single French words (6 male speakers, 4 native and 2 non-native, 2 female speakers, 1 native and 1 non-native)
+Method: Average formant extraction and selection of the closest vowel in 4-dimensional formant space using reference vowels from "Do Isolated Vowels Represent Vowel Targets in French? An Acoustic Study On Coarticulation"
+
+Native:
+              precision    recall  f1-score   support
+
+           2      0.000     0.000     0.000         5
+           9      0.000     0.000     0.000        10
+           E      0.000     0.000     0.000         8
+           O      0.000     0.000     0.000         5
+           a      0.265     1.000     0.419         9
+           e      0.714     0.714     0.714         7
+           i      0.000     0.000     0.000         5
+           o      0.000     0.000     0.000         5
+           u      0.000     0.000     0.000         5
+           y      0.333     0.800     0.471         5
+
+    accuracy                          0.281        64
+   macro avg      0.131     0.251     0.160        64
+weighted avg      0.141     0.281     0.174        64
+
+Non-native:
+              precision    recall  f1-score   support
+
+           2      0.000     0.000     0.000         2
+           9      0.125     0.167     0.143         6
+           E      0.000     0.000     0.000         7
+           O      0.000     0.000     0.000         4
+           a      0.333     1.000     0.500         7
+           e      1.000     1.000     1.000         5
+           i      0.000     0.000     0.000         3
+           o      0.000     0.000     0.000         1
+           u      0.000     0.000     0.000         1
+           y      0.600     1.000     0.750         3
+
+    accuracy                          0.410        39
+   macro avg      0.206     0.317     0.239        39
+weighted avg      0.253     0.410     0.298        39
+
+Female:
+              precision    recall  f1-score   support
+
+           2      0.000     0.000     0.000         1
+           9      0.125     0.250     0.167         4
+           E      0.000     0.000     0.000         6
+           O      0.000     0.000     0.000         3
+           a      0.333     1.000     0.500         4
+           e      0.500     1.000     0.667         2
+           i      0.000     0.000     0.000         2
+           o      0.000     0.000     0.000         1
+           u      0.000     0.000     0.000         1
+           y      0.500     0.500     0.500         2
+
+    accuracy                          0.308        26
+   macro avg      0.146     0.275     0.183        26
+weighted avg      0.147     0.308     0.192        26
+
+Male:
+              precision    recall  f1-score   support
+
+           2      0.000     0.000     0.000         6
+           9      0.000     0.000     0.000        12
+           E      0.000     0.000     0.000         9
+           O      0.000     0.000     0.000         6
+           a      0.279     1.000     0.436        12
+           e      1.000     0.800     0.889        10
+           i      0.000     0.000     0.000         6
+           o      0.000     0.000     0.000         5
+           u      0.000     0.000     0.000         5
+           y      0.400     1.000     0.571         6
+
+    accuracy                          0.338        77
+   macro avg      0.168     0.280     0.190        77
+weighted avg      0.205     0.338     0.228        77
+
+Overall:
+              precision    recall  f1-score   support
+
+           2      0.000     0.000     0.000         7
+           9      0.056     0.062     0.059        16
+           E      0.000     0.000     0.000        15
+           O      0.000     0.000     0.000         9
+           a      0.291     1.000     0.451        16
+           e      0.833     0.833     0.833        12
+           i      0.000     0.000     0.000         8
+           o      0.000     0.000     0.000         6
+           u      0.000     0.000     0.000         6
+           y      0.412     0.875     0.560         8
+
+    accuracy                          0.330       103
+   macro avg      0.159     0.277     0.190       103
+weighted avg      0.183     0.330     0.220       103
