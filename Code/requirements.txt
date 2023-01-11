@@ -1,7 +1,14 @@
+librosa
+matplotlib
 numpy
 pandas
 praat-parselmouth
+scikit-image
+scikit-learn
 scipy
+textgrid
+torch
+tqdm
 wave
 git+https://github.com/mwv/praat_formants_python#egg=praat_formants_python
 
