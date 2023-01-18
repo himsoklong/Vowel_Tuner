@@ -1,12 +1,12 @@
 # Vowel_Tuner
-This is a respository for the 2022-2023 Software Project (UE905 EC1) at IDMC (Nancy), under the supervision of Ajinkya KULKARNI, Esteban Marquer and Prof.Miguel Couceiro. The main objective of this project is building the application to help french learner to improve thier pronunciation. 
+This is the respository for the 2022-2023 Software Project (UE905 EC1) at IDMC (Nancy), under the supervision of Ajinkya KULKARNI, Esteban Marquer and Prof. Miguel Couceiro. The main objective of this project is building an application to help French learners to improve thier pronunciation. 
 
 ##Team member
 In this project involed by four students in M2 NLP:
--Soklong HIM
--Nora LINDVALL
--Maxime MÉLOUX
--Jorge VASQUEZ-MERCADO
+- Soklong HIM
+- Nora LINDVALL
+- Maxime MÉLOUX
+- Jorge VASQUEZ-MERCADO
 
 ## Abstract
 
@@ -16,7 +16,7 @@ In this project involed by four students in M2 NLP:
 ### L1:
 1. [CFPP2000: Parisian French corpus](https://cocoon.huma-num.fr/exist/crdo/meta/cocoon-8bc96a4e-9899-30e4-99be-c72d216eb38b) (done)
 2. [MPF: Multicultural Parisian French corpus](https://www.ortolang.fr/market/corpora/mpf/) (need request)
-3. [CFPQ: Qu ́ebec French corpus](https://applis.flsh.usherbrooke.ca/cfpq/) (not found)
+3. [CFPQ: Québec French corpus](https://applis.flsh.usherbrooke.ca/cfpq/) (not found)
 4. [Rhapsodie: Spoken French, annotated for prosody and syntax]()
 
 ### L2:
