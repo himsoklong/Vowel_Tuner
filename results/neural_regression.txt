@@ -1,0 +1,102 @@
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*128, 10) [1,193,300]
+Untrimmed, SGD(0.01), 50 epochs: 61.34 @6
+To redo (black/white padding)
+
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Drop(0.3) → Full(32*29*128, 10) [1,193,300]
+Untrimmed, SGD(0.01), 50 epochs: 61.34 @11
+
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Drop(0.3) → Full(32*29*128, 64) → Full(64, 10) [7,607,690]
+Untrimmed, SGD(0.01), 50 epochs: 66.39 @10/15
+
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Drop(0.3) → Full(32*29*70, 64) → Full(64, 10) [4,162,954]
+Trimmed, SGD(0.01), 50 epochs: 81.51 @6
+
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*70, 64) → Full(64, 10) [4,162,954]
+Trimmed, SGD(0.01), 50 epochs: 80.67 @11
+
+
+After dataset update:
+
+[C3M3C3M3F64F10-SGD]
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*56, 64) → Full(64, 10) [5,053,834]
+Trimmed, SGD(0.01), 15 epochs: 83.50@4/9, loss ~ 600
+Trimmed/fixed, SGD(0.01), 15 epochs: 72.94@53, loss ~ 60
+
+[C3M3C3M3D3F64F10-SGD]
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Dropout(0.3) → Full(32*29*56, 64) → Full(64, 10) [5,053,834]
+Trimmed, SGD(0.01), 15 epochs: 80.79@9, loss ~ 600
+
+[C3M3C3M3F10-SGD]
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*56, 10) [793,610]
+Trimmed, SGD(0.01), 15 epochs: 81.03@14, loss ~ 130
+
+[C3M3C3M3F64F10-AW]
+(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*56, 64) → Full(64, 10) [5,053,834]
+Trimmed, AdamW(0.01), 11 epochs: No progress (loss ↑↓)
+
+
+This file describes the results of experiments in which a neural regression model is fed with melspectrograms of words, and it has to predict the position of the vowel in the file. For each pair of lines, the results are described as such:
+---
+Model architecture (unlabeled layers represent convolutional layers with their number of output channels, kernel size and padding [default = none], Full represents full-connected layers with their output size and Max represents max pooling layers with their kernel size) [Number of parameters]
+Training parameters (loss function, optimizer, batch size [default = 1], number of epochs): final training loss/best validation loss (best validation epoch)
+---
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → Max(2) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01), 15 epochs: 0.5557/0.4025
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → Max(2) → Dropout(0.3) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01), 15 epochs: 0.5548/0.4023
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → Max(2) → Dropout(0.3) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, 15 epochs: 0.5554/0.4023
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → Max(2) → Dropout(0.3) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, batch size 32, 15 epochs: 1.1277/0.9352
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → BatchNorm → Max(2) → Dropout(0.3) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, batch size 32, 15 epochs: 1.1399/0.9477
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → BatchNorm → Max(2) → Dropout(0.3) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, batch size 32, 50 epochs: 0.7854/0.6100
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → BatchNorm → Max(2) → Dropout(0.3) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, batch size 128, 200 epochs: 0.7823/0.5172
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → Max(2) → Dropout(0.3) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2832/0.269 (37/39)
+
+(16, 3) → Relu → Max(2) → (32, 3) → Relu → Max(2) → Dropout(0.5) → Full(64) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2837/0.2700 (?)
+
+(16, 3) → Dropout(0.1) → Relu → Max(2) → (32, 3) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(2) [374,146]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2854/0.2663 (39)
+
+(16, 3) → Dropout(0.1) → Relu → Max(2) → (32, 3) → Dropout(0.2) → Relu → Max(2) → Full(32) → Dropout(0.5) → Relu → Full(2) [189,570]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2990/0.2693 (43)
+
+(16, 3) → Dropout(0.1) → Relu → Max(2) → (32, 3) → Dropout(0.2) → Relu → Max(2) → Full(128) → Dropout(0.5) → Relu → Full(2) [743,586]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.3090/0.2612 (44)
+
+(16, 3) → Dropout(0.1) → Relu → Max(2) → (32, 3) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2544/0.2467 (44)
+
+(16, 3) → Dropout(0.1) → Relu → Max(2) → (32, 3) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(16) → Dropout(0.5) → Relu → Full(2) [375,186]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2698/0.2546 (43)
+
+(16, 3) → Dropout(0.1) → Relu → Max(2) → (32, 3) → Dropout(0.15) → Relu → Max(2) → (64, 3) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(16) → Dropout(0.5) → Relu → Full(2) [140,930]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2706/0.2774 (43)
+
+(16, 3, same) → Dropout(0.1) → Relu → Max(2) → (32, 3, same) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [466,370]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2467/0.2459 (46)
+
+(16, 3, valid) → Dropout(0.1) → Relu → Max(2) → (32, 3, valid) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
+MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2387/0.2414 (45) [Total test MSE: 1.0000]
+
+(16, 3, valid) → Dropout(0.1) → Relu → Max(2) → (32, 3, valid) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
+BCELoss, SGD(0.01) + Plateau, 50 epochs: 34.0201/34.2751 (30) [Total test MSE: 0.8479]
+
+(16, 3, valid) → Dropout(0.1) → Relu → Max(2) → (32, 3, valid) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
+BCELoss, AdamW(0.001) + Plateau, 50 epochs: 33.9180/34.1596 (30) [Total test MSE: 0.8670]
+
+(16, 3, valid) → Dropout(0.1) → Relu → Max(2) → (32, 3, valid) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
+BCELoss, AdamW(0.001) + Plateau, 30 epochs: 33.9321/34.2134 (30) [Total test MSE: 0.6937]
