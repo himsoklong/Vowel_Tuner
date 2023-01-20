@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+</head>
+<body>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+        <label for="gender">Choose your gender:</label>
+        <select id="gender", name="gender">
+            <option value="m">Male</option>
+            <option value="f">Female</option>
+        </select>
+
+        <label for="model">Choose the model</label>
+        <select id="model", name="model">
+            <option value="rb">Rule-Based</option>
+            <option value="nn">Neural Network</option>
+        </select>
+
+        <label for="target_vowel">Choose the vowel</label>
+        <select id="target_vowel", name="target_vowel">
+            <option value="2"> 2 </option>
+            <option value="9">Neural Network</option>
+            <option value="a">Rule-Based</option>
+            <option value="a~">Neural Network</option>
+            <option value="e">Rule-Based</option>
+            <option value="E">Neural Network</option>
+            <option value="i">Rule-Based</option>
+            <option value="O">Neural Network</option>
+            <option value="o">Neural Network</option>
+            <option value="o~">Neural Network</option>
+            <option value="u">Neural Network</option>
+            <option value="U~+">Neural Network</option>
+            <option value="y">Neural Network</option>
+
+        </select>
+
+        <label for="tags">Upload audio file:</label>
+        <input type="file" class="form-control" name="file" placeholder="select your audio file" required>
+        <br />
+        <input type="submit" name="submit" class="btn btn-success btn-lg btn-block" value="Predict">
+
+    </form>
+</body>
+</html>

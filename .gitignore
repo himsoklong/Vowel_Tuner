@@ -2,3 +2,7 @@
 /Code/.ipynb_checkpoints
 /Code/I.mp3
 /Code/tmp_process*
+Flask_VT/venv
+Flask_VT/.idea
+models/rule_based.joblib
+

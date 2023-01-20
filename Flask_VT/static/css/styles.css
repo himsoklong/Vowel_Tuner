@@ -1,0 +1,12 @@
+h1 {
+    text-align: center;
+}
+
+#title-page {
+    background-color: #1A120B;
+    color: #E5E5CB;
+}
+
+#btn-record {
+    padding: 25px 25px 25px 25px;
+}
