@@ -100,3 +100,7 @@ BCELoss, AdamW(0.001) + Plateau, 50 epochs: 33.9180/34.1596 (30) [Total test MSE
 
 (16, 3, valid) → Dropout(0.1) → Relu → Max(2) → (32, 3, valid) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
 BCELoss, AdamW(0.001) + Plateau, 30 epochs: 33.9321/34.2134 (30) [Total test MSE: 0.6937]
+
+
+Same architecture for classification (last layer: Full(10)) [192,202]
+Same parameters, 15 epochs: Loss: 0.0247, Test acc: 97.0874%
