@@ -9,77 +9,77 @@ let previousPhoneme;
 let wordsEndWithR;
 let vowel;
 let vowel_dict = {
-    // X-SAMPA, user notation, IPA, words (text, user notation, IPA, previous phoneme, ends with /R/, simple example, more examples)
+    // X-SAMPA, user notation, IPA, words (text, user notation, IPA, previous phoneme, ends with /R/, simple example, more examples), successes, tries
     "a": ["a", "a", [
         ["la", "l-a", "la", "l", false],
         ["ma", "m-a", "ma", "m", false],
         ["pas", "p-a", "pa", "p", false],
         ["sa", "s-a", "sa", "s", false],
         ["ta", "t-a", "ta", "t", false],
-    ], "la", "b<b>a</b>s, m<b>â</b>t"],
+    ], "la", "b<b>a</b>s, m<b>â</b>t", 0, 0],
     "i": ["i", "i", [
         ["lit", "l-i", "li", "l", false],
         ["mis", "m-i", "mi", "m", false],
         ["pi", "p-i", "pi", "p", false],
         ["si", "s-i", "si", "s", false],
         ["t'y", "t-i", "ti", "t", false],
-    ], "lit", "d<b>i</b>re, f<b>i</b>lle"],
+    ], "lit", "d<b>i</b>re, f<b>i</b>lle", 0, 0],
     "u": ["ou", "u", [
         ["loup", "l-ou", "lu", "l", false],
         ["mou", "m-ou", "mu", "m", false],
         ["pou", "p-ou", "pu", "p", false],
         ["sous", "s-ou", "su", "s", false],
         ["tout", "t-ou", "tu", "t", false],
-    ], "tout", "l<b>ou</b>p, c<b>oû</b>t, igl<b>oo</b>"],
+    ], "tout", "l<b>ou</b>p, c<b>oû</b>t, igl<b>oo</b>", 0, 0],
     "E": ["è", "ɛ", [
         ["l'air'", "l-è-r", "lɛʁ", "l", true],
         ["mer", "m-è-r", "mɛʁ", "m", true],
         ["père", "p-è-r", "pɛʁ", "p", true],
         ["serre", "s-è-r", "sɛʁ", "s", true],
         ["terre", "t-è-r", "tɛʁ", "t", true],
-    ], "père", "g<b>è</b>le, m<b>e</b>r, b<b>ê</b>te, f<b>ai</b>te"],
+    ], "père", "g<b>è</b>le, m<b>e</b>r, b<b>ê</b>te, f<b>ai</b>te", 0, 0],
     "o": ["ô", "o", [
         ["lot", "l-ô", "lo", "l", false],
         ["mot", "m-ô", "mo", "m", false],
         ["pot", "p-ô", "po", "p", false],
         ["seau", "s-ô", "so", "s", false],
         ["tôt", "t-ô", "to", "t", false],
-    ], "mot", "t<b>ô</b>t, l<b>o</b>t, f<b>au</b>x, b<b>eau</b>"],
+    ], "mot", "t<b>ô</b>t, l<b>o</b>t, f<b>au</b>x, b<b>eau</b>", 0, 0],
     "y": ["u", "y", [
         ["lu", "l-u", "ly", "l", false],
         ["mu", "m-u", "my", "m", false],
         ["pu", "p-u", "py", "p", false],
         ["su", "s-u", "sy", "s", false],
         ["tu", "t-u", "ty", "t", false],
-    ], "tu", "v<b>u</b>, r<b>ue</b>"],
+    ], "tu", "v<b>u</b>, r<b>ue</b>", 0, 0],
     "O": ["o (open)", "ɔ", [
-        ["lors'", "l-o (open)-r", "lɔʁ", "l", true],
+        ["lors", "l-o (open)-r", "lɔʁ", "l", true],
         ["mort", "m-o (open)-r", "mɔʁ", "m", true],
         ["porc", "p-o (open)-r", "pɔʁ", "p", true],
         ["sort", "s-o (open)-r", "sɔʁ", "s", true],
         ["tort", "t-o (open)-r", "tɔʁ", "t", true],
-    ], "fort", "s<b>o</b>l, p<b>o</b>rc"],
+    ], "fort", "s<b>o</b>l, p<b>o</b>rc", 0, 0],
     "e": ["é", "e", [
         ["les", "l-é", "le", "l", false],
         ["mes", "m-é", "me", "m", false],
         ["pet", "p-é", "pe", "p", false],
         ["ses", "s-é", "se", "s", false],
         ["tes", "t-é", "te", "t", false],
-    ], "les", "n<b>é</b>, nou<b>ée</b>, m<b>es</b>"],
+    ], "les", "n<b>é</b>, nou<b>ée</b>, m<b>es</b>", 0, 0],
     "2": ["eu", "ø", [
         ["le", "l-eu", "lø", "l", false],
         ["me", "m-eu", "mø", "m", false],
         ["peu", "p-eu", "pø", "p", false],
         ["se", "s-eu", "sø", "s", false],
         ["te", "t-eu", "tø", "t", false],
-    ], "me", "c<b>e</b>, p<b>eu</b>, d<b>eu</b>x"],
+    ], "me", "c<b>e</b>, p<b>eu</b>, d<b>eu</b>x", 0, 0],
     "9": ["eu (open)", "œ", [
         ["leur'", "l-eu (open)-r", "lœʁ", "l", true],
         ["meurt", "m-eu (open)-r", "mœʁ", "m", true],
         ["peur", "p-eu (open)-r", "pœʁ", "p", true],
         ["sœur", "s-eu (open)-r", "sœʁ", "s", true],
         ["-teur", "t-eu (open)-r", "tœʁ", "t", true],
-    ], "peur", "s<b>eu</b>l, n<b>eu</b>f"]
+    ], "peur", "s<b>eu</b>l, n<b>eu</b>f", 0, 0]
 };
 
 const _AudioFormat = "audio/wav";
@@ -202,6 +202,7 @@ function predictionDone(data) {
             changeTab('vowel_prediction_good');
             $("#vowel-id-2").html(vowel);
             $("#score-good").html(+data['confidence'].toFixed(4)*100 + "%");
+            vowel_dict[predicted_vowel][5] += 1;
         } else {
             changeTab('vowel_prediction_bad');
             $("#vowel-id-3").html(vowel);
@@ -213,7 +214,7 @@ function predictionDone(data) {
             $("#reg2").html(registered_vowel[1]);
             $("#reg3").html(registered_vowel[3]);
             $("#reg4").html(registered_vowel[4]);
-            $("#score-bad").html(+data['confidence'].toFixed(4)*100 + "%");
+            $("#score-bad").html((+data['confidence']*100).toFixed(2) + "%");
             $("#feedback").html(data['feedback']);
             if ("add_feedback" in data && data["add_feedback"]) {
                 $("#feedback-2").html(data['add_feedback']);
@@ -222,14 +223,22 @@ function predictionDone(data) {
                 $("#feedback-2-div").hide();
             }
         }
+        vowel_dict[vowel][6] += 1;
+        $("#reg5-" + vowel).hide();
+        $("#reg6-" + vowel).show();
+        const vowelBar = $("#reg7-" + vowel);
+        vowelBar.show();
+        const progress = 100*vowel_dict[vowel][5] / vowel_dict[vowel][6];
+        vowelBar.css('width', progress+'%').attr('aria-valuenow', progress).html(vowel_dict[vowel][5] + "/" + vowel_dict[vowel][6]);
+        vowelBar.removeClass().addClass("progress-bar");
+        if (progress <= 100/3) {
+            vowelBar.addClass("progress-bar-danger");
+        } else if (progress <= 2*100/3) {
+            vowelBar.addClass("progress-bar-warning");
+        } else {
+            vowelBar.addClass("progress-bar-success");
+        }
     }
-
-    /*
-    predicted_vowel='a',
-    confidence=0.85,
-    feedback="git gud",
-    add_feedback
-    */
 }
 
 function replayAudio() { // TODO test

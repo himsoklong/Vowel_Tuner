@@ -73,7 +73,7 @@ nn_clf = torch.load('models/neural_classifier.pt', map_location=torch.device('cp
 scaler = load('models/scaler.joblib')  # The scaler, transforms formants so that they have a mean of 0 and a variance of 1
 regressor = torch.load('models/neural_regressor.pt', map_location=torch.device('cpu'))  # The vowel detection model
 
-rule_based = True
+rule_based = False
 
 idx2key = ['2', '9', 'a', 'a~', 'e', 'E', 'i', 'O', 'o', 'o~', 'u', 'U~+', 'y']  # All possible vowels
 valid = [0, 1, 2, 4, 5, 6, 7, 8, 10, 12]  # Vowels we consider here (depends on the classifier)
@@ -95,12 +95,6 @@ def upload():
     word_ends_with_r = data['r_word']
     input_file = "input.wav"
 
-    # TODO remove
-    #return jsonify(predicted_vowel='a',
-    #                   confidence=0.85,
-    #               feedback=vowel_feedback(des_vowel, 'a'),
-    #               add_feedback=pron_hack(des_vowel, 'a'))
-
     audio = base64.b64decode(audio)
 
     with open(input_file, 'wb') as f:
@@ -108,7 +102,7 @@ def upload():
 
     # Remove leading and trailing silences
     sound = AudioSegment.from_file(input_file)
-    trim_leading_silence = lambda x: x[detect_leading_silence(x, silence_threshold=-25):]
+    trim_leading_silence = lambda x: x[detect_leading_silence(x, silence_threshold=-40):]
     trimmed = trim_leading_silence(trim_leading_silence(sound).reverse()).reverse()
     trimmed.export(tmp_wav, format='wav', bitrate='768k')
 
@@ -116,8 +110,8 @@ def upload():
     try:
         y, sr = librosa.load(tmp_wav)
     except ValueError:
-        print('The file is too silent to analyze!')
-        return jsonify(error='The file is too silent to analyze!')
+        print('The file is too silent to analyze! Try speaking louder.')
+        return jsonify(error='The file is too silent to analyze! Try speaking louder.')
 
     mels = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, n_fft=512, hop_length=512)
     mels = np.log(mels + 1e-9)  # add small number to avoid log(0)
@@ -139,8 +133,8 @@ def upload():
     vowel_start = pred[0].item()
     vowel_end = pred[1].item()
     if vowel_start >= vowel_end:
-        print('The model predicted that the vowel has negative duration!')
-        return jsonify(error='The model predicted that the vowel has negative duration!')
+        print('The model predicted that the vowel has negative duration! Try again.')
+        return jsonify(error='The model predicted that the vowel has negative duration! Try again.')
 
     # Trim file at start and end to only have the vowel
     sample_rate, wave_data = wavfile.read(tmp_wav)
@@ -149,6 +143,9 @@ def upload():
     end_sample = int(duration * vowel_end * sample_rate)
     wavfile.write(tmp_wav_2, sample_rate, wave_data[start_sample:end_sample])
     duration = len(wave_data[start_sample:end_sample]) / sample_rate
+    if duration < 0.01:
+        print('The model predicted that the vowel is too short! Try speaking louder.')
+        return jsonify(error='The model predicted that the vowel is too short! Try speaking louder.')
 
     if rule_based:
         # Extract formants
@@ -168,8 +165,8 @@ def upload():
             for i in range(4):
                 formants.append(sum(f_lists[i]) / len(f_lists[i]))
         except ZeroDivisionError:
-            print('The file is too short/empty to analyze!')
-            return jsonify(error='The file is too short/empty to analyze!')
+            print('The file is too short/empty to analyze! Try speaking louder.')
+            return jsonify(error='The file is too short/empty to analyze! Try speaking louder.')
 
         # Add additional features (gender, previous phoneme)
         input_features = torch.cat([input_features[0:1], input_features[2:]]).cpu()
@@ -199,11 +196,10 @@ def upload():
     print(f'Prediction: /{final_vowel}/, confidence: {final_confidence:.3f}')
 
     return jsonify(predicted_vowel=final_vowel,
-                   confidence=final_confidence,
+                   confidence=float(final_confidence),
                    feedback=vowel_feedback(des_vowel, final_vowel),
                    add_feedback=pron_hack(des_vowel, final_vowel)
                    )
-
 
 @app.route('/')
 def index():
