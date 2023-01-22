@@ -62,17 +62,21 @@ def vowel_feedback(vowel_des, vowel_per):
     elif nasal_per == True != nasal_des:
         n_feedback = feedback_dict['nasality'][1]
 
-    # returns tuple with four values
-    return n_feedback, r_feedback, o_feedback, f_feedback
+    # Turn the output into a bullet list
+    out_str = '<ul>'
+    for feedback in (n_feedback, r_feedback, o_feedback, f_feedback):
+        if feedback:
+            out_str += '<li>' + feedback + '</li>'
+    return out_str + '</ul>'
 
 
 def pron_hack(vowel_des, vowel_per):
-    '''
-    Provides more in-depth feedback for some of the vowels.
+    """
+    Provides more in-depth feedback for some vowels.
     Input: desired vowel (string) and perceived vowel (string), for example: 'y' and 'u'
     Output: string, for example "Protrude your lips like in a kiss."
     If no advice exists, the function returns an empty string.
-    '''
+    """
 
     hack_dict = {
         'x_to_y': "Try saying “tea” in English. Now keep your tongue in the same position but protrude your lips like in a kiss.",

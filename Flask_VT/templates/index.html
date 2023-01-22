@@ -2,51 +2,273 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Web Speech Recorder</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    
-    <!-- ONly for testing, own experiment.... -->
-    <script src="{{ url_for('static', filename='js/filesaver.js') }}"></script>
+    <title>Vowel Tuner: Up your French game!</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="shortcut icon" href="#">
 
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-
-    <!-- jQuery library -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
- 
-    <!-- Popper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script> 
-</head>
-<body>
-    <div class="container-fluid text-center">
-        <div id="title-page" class="jumbotron">
-            <h1>Vowel Tuner</h1>
-        </div>
-        <p>Do you want to improve your fluency in french language? Are you having problems with french vowels
-        in your learning process?
-        </p>
-        <p>Don't worry, Vowel Tuner is here to help!</p>
-        
-    </div>
-    <div id="btn-record" class="text-center">
-        <button id="start-btn" type="button" class="btn btn-dark">Start Recording</button>
-        <button id="stop-btn" type="button" class="btn btn-dark" disabled>Stop Recording</button>
-    </div>
-    <div id="btn-pred" class="text-center">
-        <button id="predict-btn" type="button" class="btn btn-dark">Predict</button>
-    </div>
-
-    <h2>Stored Recordings</h2>
-    <ul id="recordingslist"></ul>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 
     <script src="{{ url_for('static', filename='js/recorder.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-3.4.1.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
 
-    
+<body role="document">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <span class="navbar-brand mobile" id="version-mobile">Vowel Tuner</span>
+            </div>
+
+            <span class="navbar-brand" id="version">Vowel Tuner</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid" role="main" id="main">
+        <div class="alert alert-warning">
+            <span class="glyphicon glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+            <b>Warning:</b> This page is a work in progress. Bugs might still be present.
+        </div>
+
+        <div id="welcome" style="display:none">
+            <div class="panel panel-info panel-body">
+                <div class="container">
+                    <div class="text-center">
+                        <div class="container">
+                            <div class="col-md-8 col-md-offset-2">
+                                <h4 style='text-align: left; font-weight: bold'>Do you want to sound like a French native speaker?</h4>
+                                <br/>
+                                <h4 style='text-align: right; font-weight: bold'>Are you having trouble pronouncing French vowels?</h4>
+                            </div>
+                        </div>
+                        <br/>
+                        <h3>Start practicing your French vowels now!</h3>
+                        <br/>
+                        In order to recognize your pronunciation, the system currently needs to know your gender.
+                        <br/><br/>
+                        <div class="col-md-12">
+                            <label for="gender" class="col-sm-6 control-label" style="text-align: right">I am a...</label>
+                            <div class="col-md-6" style="text-align: left">
+                                <select id="gender">
+                                    <option value="" disabled selected>Select your gender</option>
+                                    <option value="default">Female</option>
+                                    <option value="default">Male</option>
+                                </select>
+                            </div>
+                        </div>
+                        <span id="no_gender" style="display:none; color: #c00000">Please select a gender first!</span>
+                        <br/><br/>
+                        <button class="btn btn-default" id="welcome-btn" style="font-size: 28px; padding: 8px 20px 8px 20px;">Start!</button>
+                        <br/><br/>
+                        <h6>Disclaimer: We acknowledge that there are several correct ways to pronounce French vowels and that pronunciation varies between regions.<br/>
+                            This system is based on northern French accent, which is the accent most widely taught in schools.</h6>
+                        <br/>
+                        <h5>This system was developed by Soklong HIM, Nora LINDVALL, Maxime MÉLOUX and Jorge Luis VÁSQUEZ MERCADO<br/>
+                            as part of the second year of the MSc in Natural Language Processing at the IDMC, Nancy, France.</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vowel_selection" style="display:none">
+            <div class="panel panel-info panel-body col-centered">
+                <h4>Choose the vowel sound that you'd like to practice.</h4>
+                <br/>
+                <div class="row">
+                    <div class="col-md-2 col-md-offset-1">
+                        <div class="panel panel-success panel-body col-centered">
+                            <h1 id="reg1-a"></h1>
+                            <p>/<span id="reg2-a"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-a"></span></h3>
+                            <h5 id="reg4-a"></h5>
+                            <button class="btn btn-default" id="a-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-success panel-body col-centered">
+                            <h1 id="reg1-i"></h1>
+                            <p>/<span id="reg2-i"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-i"></span></h3>
+                            <h5 id="reg4-i"></h5>
+                            <button class="btn btn-default" id="i-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-success panel-body col-centered">
+                            <h1 id="reg1-u"></h1>
+                            <p>/<span id="reg2-u"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-u"></span></h3>
+                            <h5 id="reg4-u"></h5>
+                            <button class="btn btn-default" id="u-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-warning panel-body col-centered">
+                            <h1 id="reg1-E"></h1>
+                            <p>/<span id="reg2-E"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-E"></span></h3>
+                            <h5 id="reg4-E"></h5>
+                            <button class="btn btn-default" id="E-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-warning panel-body col-centered">
+                            <h1 id="reg1-o"></h1>
+                            <p>/<span id="reg2-o"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-o"></span></h3>
+                            <h5 id="reg4-o"></h5>
+                            <button class="btn btn-default" id="o-btn">Let's go!</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2 col-md-offset-1">
+                        <div class="panel panel-warning panel-body col-centered">
+                            <h1 id="reg1-y"></h1>
+                            <p>/<span id="reg2-y"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-y"></span></h3>
+                            <h5 id="reg4-y"></h5>
+                            <button class="btn btn-default" id="y-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-danger panel-body col-centered">
+                            <h1 id="reg1-O"></h1>
+                            <p>/<span id="reg2-O"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-O"></span></h3>
+                            <h5 id="reg4-O"></h5>
+                            <button class="btn btn-default" id="O-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-danger panel-body col-centered">
+                            <h1 id="reg1-e"></h1>
+                            <p>/<span id="reg2-e"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-e"></span></h3>
+                            <h5 id="reg4-e"></h5>
+                            <button class="btn btn-default" id="e-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-danger panel-body col-centered">
+                            <h1 id="reg1-2"></h1>
+                            <p>/<span id="reg2-2"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-2"></span></h3>
+                            <h5 id="reg4-2"></h5>
+                            <button class="btn btn-default" id="2-btn">Let's go!</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-danger panel-body col-centered">
+                            <h1 id="reg1-9"></h1>
+                            <p>/<span id="reg2-9"></span>/</p>
+                            <h3>as in <span style="font-weight: bold" id="reg3-9"></span></h3>
+                            <h5 id="reg4-9"></h5>
+                            <button class="btn btn-default" id="9-btn">Let's go!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vowel_recording" style="display:none">
+            <div class="panel panel-info panel-body col-centered">
+                <h4>You have selected the vowel <b><span id="vowel-id"></span></b>, also written as /<span id="vowel-ipa"></span>/.</h4>
+                <h3>Try pronouncing the following word:</h3>
+                <h1><span id="word-id"></span></h1>
+                <h3><span id="word-txt"></span></h3>
+                <h5>/<span id="word-ipa"></span>/</h5>
+                <div class="container">
+                    <button class="btn btn-default" id="start-btn">Start recording</button>
+                    <button class="btn btn-default" id="stop-btn" style="display: none;">Stop recording</button>
+                    <span id="wait" style="display: none;"><h4>Wait...</h4></span>
+                    <span id="speak" style="display: none;"><h4>Speak now!</h4></span>
+                </div>
+                <br/>
+                <div id="predict-div" style="display: none;">
+                    <h5>By clicking the button below, you acknowledge that the information you provide will be processed in accordance with our <a href="privacy.html">Privacy policy.</a></h5>
+                    <button class="btn btn-default" id="predict-btn">Rate my vowel!</button>
+                    <h4><span id="processing" style="display: none;">Processing...</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <div id="vowel_prediction_err" style="display:none">
+            <div class="alert alert-warning" id="error-banner" style="display: None;">
+                <span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span>
+                <b>Error:</b> <span id="error-message"></span>
+                <div class="row">
+                    <div class="col-md-12">
+                        Go back to:
+                        <button class="btn btn-default" id="record-again-btn">Recording</button>
+                        <button class="btn btn-default" id="select-again-btn">Vowel selection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vowel_prediction_good" style="display:none">
+            <div class="panel panel-info panel-body col-centered">
+                <h2 style="color: #008000;">You got it!</h2>
+                <h2 style="color: #008000;">Excellent work!</h2>
+                <h5>Score: <span id="score-good"></span></h5>
+                <br/>
+                <button class="btn btn-default" id="listen-self-btn">Listen to yourself</button>
+                <br/><br/>
+                <button class="btn btn-default" id="listen-ref-btn">Listen to <b><span id="vowel-id-2"></span></b></button>
+                <br/><br/><br/>
+                <button class="btn btn-default" id="vowel-selection-btn">Back to vowel selection</button>
+            </div>
+        </div>
+
+        <div id="vowel_prediction_bad" style="display:none">
+            <div class="panel panel-info panel-body col-centered">
+                <h2 style="color: #800000;">Not quite!</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="panel panel-info panel-body">
+                            <h3>How to improve:</h3>
+                            <span id="feedback" style="text-align: left;"></span>
+                        </div>
+                        <div class="panel panel-info panel-body" id="feedback-2-div">
+                            <h3>Pronunciation hack!</h3>
+                            <span id="feedback-2" style="text-align: left;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        Your vowel was registered as:
+                        <h1 id="reg1"></h1>
+                        <p>/<span id="reg2"></span>/</p>
+                        <h3>as in <span style="font-weight: bold" id="reg3"></span></h3>
+                        <h5 id="reg4"></h5>
+                        <h5>Confidence: <span id="score-bad"></span></h5>
+                        <button class="btn btn-default" id="listen-self-2-btn">Listen to yourself</button>
+                        <br/><br/>
+                        <button class="btn btn-default" id="listen-ref-2-btn">Listen to <b><span id="vowel-id-3"></span></b></button>
+                        <br/><br/><br/>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-info panel-body">
+                            <h3>How the mouth should move:</h3>
+                            <video controls>
+                                <source id="video" src="" type="video/mp4">
+                            </video>
+                            <br/>
+                            A native speaker pronouncing <b><span id="vowel-id-4"></span></b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-centered">
+                            <button class="btn btn-default" id="record-again-2-btn">Retry</button>
+                            <button class="btn btn-default" id="select-again-2-btn">Vowel selection</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>

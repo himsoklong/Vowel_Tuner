@@ -2,7 +2,10 @@
 /Code/.ipynb_checkpoints
 /Code/I.mp3
 /Code/tmp_process*
+models/rule_based.joblib
 Flask_VT/venv
 Flask_VT/.idea
-models/rule_based.joblib
+Flask_VT/*.wav
+Flask_VT/__pycache__
+Flask_VT/models/rule_based.joblib
 
