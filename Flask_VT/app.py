@@ -73,7 +73,7 @@ nn_clf = torch.load('models/neural_classifier.pt', map_location=torch.device('cp
 scaler = load('models/scaler.joblib')  # The scaler, transforms formants so that they have a mean of 0 and a variance of 1
 regressor = torch.load('models/neural_regressor.pt', map_location=torch.device('cpu'))  # The vowel detection model
 
-rule_based = False
+rule_based = True
 
 idx2key = ['2', '9', 'a', 'a~', 'e', 'E', 'i', 'O', 'o', 'o~', 'u', 'U~+', 'y']  # All possible vowels
 valid = [0, 1, 2, 4, 5, 6, 7, 8, 10, 12]  # Vowels we consider here (depends on the classifier)

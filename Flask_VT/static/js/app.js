@@ -32,7 +32,7 @@ let vowel_dict = {
         ["tout", "t-ou", "tu", "t", false],
     ], "tout", "l<b>ou</b>p, c<b>oû</b>t, igl<b>oo</b>", 0, 0],
     "E": ["è", "ɛ", [
-        ["l'air'", "l-è-r", "lɛʁ", "l", true],
+        ["l'air", "l-è-r", "lɛʁ", "l", true],
         ["mer", "m-è-r", "mɛʁ", "m", true],
         ["père", "p-è-r", "pɛʁ", "p", true],
         ["serre", "s-è-r", "sɛʁ", "s", true],
@@ -74,7 +74,7 @@ let vowel_dict = {
         ["te", "t-eu", "tø", "t", false],
     ], "me", "c<b>e</b>, p<b>eu</b>, d<b>eu</b>x", 0, 0],
     "9": ["eu (open)", "œ", [
-        ["leur'", "l-eu (open)-r", "lœʁ", "l", true],
+        ["leur", "l-eu (open)-r", "lœʁ", "l", true],
         ["meurt", "m-eu (open)-r", "mœʁ", "m", true],
         ["peur", "p-eu (open)-r", "pœʁ", "p", true],
         ["sœur", "s-eu (open)-r", "sœʁ", "s", true],
