@@ -197,16 +197,17 @@ function predictionDone(data) {
         $("#error-message").html(data["error"]);
         changeTab('vowel_prediction_err');
     } else {
+        const textVowel = vowel_dict[vowel][0];
         let predicted_vowel = data['predicted_vowel'];
         if (predicted_vowel === vowel) {
             changeTab('vowel_prediction_good');
-            $("#vowel-id-2").html(vowel);
+            $("#vowel-id-2").html(textVowel);
             $("#score-good").html(+data['confidence'].toFixed(4)*100 + "%");
             vowel_dict[predicted_vowel][5] += 1;
         } else {
             changeTab('vowel_prediction_bad');
-            $("#vowel-id-3").html(vowel);
-            $("#vowel-id-4").html(vowel);
+            $("#vowel-id-3").html(textVowel);
+            $("#vowel-id-4").html(textVowel);
             $('#video').attr('src', '../video/' + vowel + '.mp4'); // TODO test
             //$("#video")[0].load(); // TODO test
             let registered_vowel = vowel_dict[predicted_vowel];
