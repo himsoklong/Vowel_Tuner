@@ -30,5 +30,25 @@ In this project involed by four students in M2 NLP:
 ### Other (not yet discuss:
 1. [librivox](https://librivox.org/search?primary_key=2&search_category=language&search_page=1&search_form=get_results) (audio book)
 ## Install instructions
+1. Clone our repository :
+```sh
+git clone https://github.com/himsoklong/Vowel_Tuner.git
+```
+2. In other to run our code even in [Code](Code) or our Web app. we would recommend to using vitual environment. we can create python environment and activate it by following instruction from this [Python website](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
+3. Go into the project folder and install the needed packages with:
+```sh
+pip install -r requirements.txt
+```
+4. Since the rule-based model is not small. Please download the model from this here. [Rule-Based Model](https:example.com). after that pass the model into [model](models) directory and for web app, pass into [models](Flask_VT/models) directory.
+## How to use
+1. if you want to see our experiment please check our code in Code directory. with our ipynb file.
+you can run the from the terminal:
+```sh
+jupyter notebook
+```
 
+2. You also run our web app to try our model by going to [Flask_VT](Flask_VT) and run the below command in your terminal:
+```sh
+flask run
+```
 ## Datasets
