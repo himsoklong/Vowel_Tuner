@@ -7,7 +7,15 @@ let currentTab;
 let speakerGender;
 let previousPhoneme;
 let wordsEndWithR;
-let vowel;
+let currentSeries;
+let seriesIndex;
+let vowelSeries;
+let wordSeries;
+let wordSeriesProbasNN;
+let wordSeriesPredNN;
+let wordSeriesProbasLG;
+let wordSeriesPredLG;
+let totalSeries;
 let vowel_dict = {
     // X-SAMPA, user notation, IPA, words (text, user notation, IPA, previous phoneme, ends with /R/, simple example, more examples), successes, tries
     "a": ["a", "a", [
@@ -22,7 +30,7 @@ let vowel_dict = {
         ["mis", "m-i", "mi", "m", false],
         ["pi", "p-i", "pi", "p", false],
         ["si", "s-i", "si", "s", false],
-        ["t'y", "t-i", "ti", "t", false],
+        ["ti", "t-i", "ti", "t", false],
     ], "lit", "d<b>i</b>re, f<b>i</b>lle", 0, 0],
     "u": ["ou", "u", [
         ["loup", "l-ou", "lu", "l", false],
@@ -62,7 +70,7 @@ let vowel_dict = {
     "e": ["é", "e", [
         ["les", "l-é", "le", "l", false],
         ["mes", "m-é", "me", "m", false],
-        ["pet", "p-é", "pe", "p", false],
+        ["pé", "p-é", "pe", "p", false],
         ["ses", "s-é", "se", "s", false],
         ["tes", "t-é", "te", "t", false],
     ], "les", "n<b>é</b>, nou<b>ée</b>, m<b>es</b>", 0, 0],
@@ -78,11 +86,12 @@ let vowel_dict = {
         ["meurt", "m-eu (open)-r", "mœʁ", "m", true],
         ["peur", "p-eu (open)-r", "pœʁ", "p", true],
         ["sœur", "s-eu (open)-r", "sœʁ", "s", true],
-        ["-teur", "t-eu (open)-r", "tœʁ", "t", true],
+        ["teur", "t-eu (open)-r", "tœʁ", "t", true],
     ], "peur", "s<b>eu</b>l, n<b>eu</b>f", 0, 0]
 };
 
 const _AudioFormat = "audio/wav";
+const seriesLength = 10;
 
 function Initialize() {
     try {
@@ -103,6 +112,7 @@ function Initialize() {
 }
 
 function startRecording() {
+    $("#error-banner").hide();
     $("#wait").show();
     $("#speak").hide();
     $("#start-btn").hide();
@@ -158,100 +168,157 @@ function changeTab(newTab) {
     scroll();
 }
 
+
+function shuffle(array) {
+  const newArray = [...array]
+  const length = newArray.length
+
+  for (let start = 0; start < length; start++) {
+    const randomPosition = Math.floor((newArray.length - start) * Math.random())
+    const randomItem = newArray.splice(randomPosition, 1)
+    newArray.push(...randomItem)
+  }
+
+  return newArray
+}
+
 function welcomeClick() {
     let gender = $("#gender :selected").text();
     if (gender !== 'Select your gender') {
         speakerGender = gender;
-        changeTab('vowel_selection');
+        changeTab('vowel_recording');
+        currentSeries = shuffle(Object.keys(vowel_dict));
+        for (let vowel of currentSeries) {
+            const word_arr = vowel_dict[vowel][2];
+            wordSeries.push(word_arr[Math.floor(Math.random() * word_arr.length)])
+            vowelSeries.push(vowel);
+        }
+        nextVowel();
     } else {
         $("#no_gender").show();
     }
 }
 
-function vowelClick(newVowel) {
-    changeTab('vowel_recording');
 
-    vowel = newVowel;
-    const text_vowel = vowel_dict[vowel][0];
-    const ipa_vowel = vowel_dict[vowel][1];
-    const word_arr = vowel_dict[vowel][2];
-    const word = word_arr[Math.floor(Math.random()*word_arr.length)]
-    const word_id = word[0];
-    const word_txt = word[1];
-    const word_ipa = word[2];
-    previousPhoneme = word[3];
-    wordsEndWithR = word[4];
-
-    $("#vowel-id").html(text_vowel);
-    $("#vowel-ipa").html(ipa_vowel);
-    $("#word-id").html(word_id);
-    $("#word-txt").html(word_txt);
-    $("#word-ipa").html(word_ipa);
-}
-
-function predictionDone(data) {
-    $("#predict-div").show();
-    $("#processing").hide();
-    console.log(data);
-    if ("error" in data) {
-        $("#error-message").html(data["error"]);
-        changeTab('vowel_prediction_err');
+function nextVowel() {
+    if (seriesIndex < totalSeries * seriesLength + seriesLength - 1) {
+        seriesIndex += 1;
+        const word = wordSeries[seriesIndex];
+        $("#cnt").html(seriesIndex % seriesLength + 1);
+        $("#word-id").html(word[0]);
+        previousPhoneme = word[3];
+        wordsEndWithR = word[4];
     } else {
-        const textVowel = vowel_dict[vowel][0];
-        let predicted_vowel = data['predicted_vowel'];
-        if (predicted_vowel === vowel) {
-            changeTab('vowel_prediction_good');
-            $("#vowel-id-2").html(textVowel);
-            $("#score-good").html(+data['confidence'].toFixed(4)*100 + "%");
-            vowel_dict[predicted_vowel][5] += 1;
-        } else {
-            changeTab('vowel_prediction_bad');
-            $("#vowel-id-3").html(textVowel);
-            $("#vowel-id-4").html(textVowel);
-            $('#video').attr('src', '../video/' + vowel + '.mp4'); // TODO test
-            //$("#video")[0].load(); // TODO test
-            let registered_vowel = vowel_dict[predicted_vowel];
-            $("#reg1").html(registered_vowel[0]);
-            $("#reg2").html(registered_vowel[1]);
-            $("#reg3").html(registered_vowel[3]);
-            $("#reg4").html(registered_vowel[4]);
-            $("#score-bad").html((+data['confidence']*100).toFixed(2) + "%");
-            $("#feedback").html(data['feedback']);
-            if ("add_feedback" in data && data["add_feedback"]) {
-                $("#feedback-2").html(data['add_feedback']);
-                $("#feedback-2-div").show();
-            } else {
-                $("#feedback-2-div").hide();
-            }
-        }
-        vowel_dict[vowel][6] += 1;
-        $("#reg5-" + vowel).hide();
-        $("#reg6-" + vowel).show();
-        const vowelBar = $("#reg7-" + vowel);
-        vowelBar.show();
-        const progress = 100*vowel_dict[vowel][5] / vowel_dict[vowel][6];
-        vowelBar.css('width', progress+'%').attr('aria-valuenow', progress).html(vowel_dict[vowel][5] + "/" + vowel_dict[vowel][6]);
-        vowelBar.removeClass().addClass("progress-bar");
-        if (progress <= 100/3) {
-            vowelBar.addClass("progress-bar-danger");
-        } else if (progress <= 2*100/3) {
-            vowelBar.addClass("progress-bar-warning");
-        } else {
-            vowelBar.addClass("progress-bar-success");
-        }
+        totalSeries += 1;
+        $("#series-cnt").html(totalSeries);
+        $("#predict-div").show();
+        $("#processing").hide();
+        changeTab('series_done');
     }
 }
 
-function replayAudio() {
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-    audio.play().then(r => console.log('Replayed!'));
+
+function red(txt) {
+    return "<span style='color: #8B0000;'>" + txt + "</span>";
 }
 
-function playReferenceAudio() { // TODO test
-    const audio = new Audio('../wav/' + vowel + '.wav');
-    audio.play().then(r => console.log('Replayed!'));
+
+function green(txt) {
+    return "<span style='color: #006400;'>" + txt + "</span>";
 }
+
+
+function displayResults() {
+    changeTab("results");
+    $("#data-nn").html(wordSeriesProbasNN);
+    $("#data-lg").html(wordSeriesProbasLG);
+    let lgCorrect = 0;
+    let nnCorrect = 0;
+    let total = 0;
+
+    for (let i in vowelSeries) {
+        let tr = "<tr>";
+        tr += "<td>" + i + "</td>";
+        tr += "<td>" + wordSeries[i][0] + "</td>";
+        tr += "<td>" + vowelSeries[i] + "</td>";
+        total += 1;
+
+        let txt = wordSeriesPredNN[i];
+        if (txt === vowelSeries[i]) {
+            txt = green(txt);
+            nnCorrect += 1;
+        } else {
+            txt = red(txt);
+        }
+        tr += "<td>" + txt + "</td>";
+
+        txt = wordSeriesPredLG[i];
+        if (txt === vowelSeries[i]) {
+            txt = green(txt);
+            lgCorrect += 1;
+        } else {
+            txt = red(txt);
+        }
+        tr += "<td>" + txt + "</td>";
+
+        tr += "<td>";
+        for (const val of wordSeriesProbasNN[i]) {
+            tr += val.toFixed(4) + ", ";
+        }
+        tr = tr.slice(0, -2)
+        tr += "</td>";
+        tr += "<td>";
+        for (const val of wordSeriesProbasLG[i]) {
+            tr += val.toFixed(4) + ", ";
+        }
+        tr = tr.slice(0, -2)
+        tr += "</td>";
+        tr += "</tr>";
+        $("#result-table").append(tr);
+    }
+    $("#result-table").append("<tr><td>Total</td><td></td><td></td><td>"
+        + (100*nnCorrect/total).toFixed(2) + " %</td><td>"
+        + (100*lgCorrect/total).toFixed(2) + " %</td><td></td><td></td></tr>");
+
+    /*
+    const textVowel = vowel_dict[vowel][0];
+    let predicted_vowel = data['predicted_vowel'];
+    if (predicted_vowel === vowel) {
+        changeTab('vowel_prediction_good');
+        $("#vowel-id-2").html(textVowel);
+        $("#score-good").html(+data['confidence'].toFixed(4)*100 + "%");
+        vowel_dict[predicted_vowel][5] += 1;
+    } else {
+        changeTab('vowel_prediction_bad');
+        $("#vowel-id-3").html(textVowel);
+        $("#vowel-id-4").html(textVowel);
+        let registered_vowel = vowel_dict[predicted_vowel];
+        $("#reg1").html(registered_vowel[0]);
+        $("#reg2").html(registered_vowel[1]);
+        $("#reg3").html(registered_vowel[3]);
+        $("#reg4").html(registered_vowel[4]);
+        $("#score-bad").html((+data['confidence']*100).toFixed(2) + "%");
+    }
+    vowel_dict[vowel][6] += 1;
+    $("#reg5-" + vowel).hide();
+    $("#reg6-" + vowel).show();
+    */
+}
+
+
+function predictionDone(data) {
+    if ("error" in data) {
+        $("#error-message").html(data["error"]);
+        $("#error-banner").show();
+    } else {
+        wordSeriesProbasNN.push(data["probas_nn"]);
+        wordSeriesPredNN.push(data["pred_nn"]);
+        wordSeriesProbasLG.push(data["probas_lg"]);
+        wordSeriesPredLG.push(data["pred_lg"]);
+        nextVowel();
+    }
+}
+
 
 // https://stackoverflow.com/a/61744566/2700737
 function blobToBase64(blob) {
@@ -268,42 +335,37 @@ $(function() {
     audioInit = false;
 
     currentTab = 'welcome';
+    totalSeries = 0;
+    wordSeriesProbasNN = [];
+    wordSeriesPredNN = [];
+    wordSeriesProbasLG = [];
+    wordSeriesPredLG = [];
+    wordSeries = [];
+    vowelSeries = [];
+    seriesIndex = -1;
+
     changeTab(currentTab);
 
     $("#start-btn").click(startRecording);
     $("#stop-btn").click(stopRecording);
     $("#welcome-btn").click(welcomeClick);
+    $("#continue-btn").click(welcomeClick);
+    $("#display-btn").click(displayResults);
     $("#gender").change(function() { $("#no_gender").hide(); })
-    $("#record-again-btn").click(function() { changeTab("vowel_recording"); $("#predict-div").hide(); })
-    $("#select-again-btn").click(function() { changeTab("vowel_selection"); $("#predict-div").hide(); })
-    $("#record-again-2-btn").click(function() { changeTab("vowel_recording"); $("#predict-div").hide(); })
-    $("#select-again-2-btn").click(function() { changeTab("vowel_selection"); $("#predict-div").hide(); })
-    $("#listen-self-btn").click(replayAudio);
-    $("#listen-ref-btn").click(playReferenceAudio);
-    $("#listen-self-2-btn").click(replayAudio);
-    $("#listen-ref-2-btn").click(playReferenceAudio);
-    $("#vowel-selection-btn").click(function() { changeTab("vowel_selection"); });
+    $("#cnt-total").html(seriesLength);
 
-    for (let vowel of Object.keys(vowel_dict)) {
-        $("#" + vowel + "-btn").click(function () { vowelClick(vowel); })
-        $("#reg1-" + vowel).html(vowel_dict[vowel][0]);
-        $("#reg2-" + vowel).html(vowel_dict[vowel][1]);
-        $("#reg3-" + vowel).html(vowel_dict[vowel][3]);
-        $("#reg4-" + vowel).html(vowel_dict[vowel][4]);
-    }
-
-	$("#predict-btn").click(async function () {
+    $("#predict-btn").click(async function () {
         $("#predict-div").hide();
         $("#processing").show();
         const b64 = await blobToBase64(audioBlob);
-        fetch('/upload', {
+        fetch('/predict', {
             method: "POST",
             body: JSON.stringify({
                 'audio': b64,
                 'gender': speakerGender,
                 'r_word': wordsEndWithR,
                 'prev_phoneme': previousPhoneme,
-                'des_vowel': vowel
+                'des_vowel': currentSeries[seriesIndex]
             })
         }).then(function (response) {
             return response.json();
