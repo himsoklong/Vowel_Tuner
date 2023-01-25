@@ -201,6 +201,7 @@ function welcomeClick() {
 
 
 function nextVowel() {
+    $("#processing").hide();
     if (seriesIndex < totalSeries * seriesLength + seriesLength - 1) {
         seriesIndex += 1;
         const word = wordSeries[seriesIndex];
@@ -212,7 +213,6 @@ function nextVowel() {
         totalSeries += 1;
         $("#series-cnt").html(totalSeries);
         $("#predict-div").show();
-        $("#processing").hide();
         changeTab('series_done');
     }
 }
@@ -276,33 +276,10 @@ function displayResults() {
         tr += "</tr>";
         $("#result-table").append(tr);
     }
-    $("#result-table").append("<tr><td>Total</td><td></td><td></td><td>"
+    $("#result-table").append("<tr><td>Total</td><td>"
+        + speakerGender[0] + "</td><td></td><td>"
         + (100*nnCorrect/total).toFixed(2) + " %</td><td>"
         + (100*lgCorrect/total).toFixed(2) + " %</td><td></td><td></td></tr>");
-
-    /*
-    const textVowel = vowel_dict[vowel][0];
-    let predicted_vowel = data['predicted_vowel'];
-    if (predicted_vowel === vowel) {
-        changeTab('vowel_prediction_good');
-        $("#vowel-id-2").html(textVowel);
-        $("#score-good").html(+data['confidence'].toFixed(4)*100 + "%");
-        vowel_dict[predicted_vowel][5] += 1;
-    } else {
-        changeTab('vowel_prediction_bad');
-        $("#vowel-id-3").html(textVowel);
-        $("#vowel-id-4").html(textVowel);
-        let registered_vowel = vowel_dict[predicted_vowel];
-        $("#reg1").html(registered_vowel[0]);
-        $("#reg2").html(registered_vowel[1]);
-        $("#reg3").html(registered_vowel[3]);
-        $("#reg4").html(registered_vowel[4]);
-        $("#score-bad").html((+data['confidence']*100).toFixed(2) + "%");
-    }
-    vowel_dict[vowel][6] += 1;
-    $("#reg5-" + vowel).hide();
-    $("#reg6-" + vowel).show();
-    */
 }
 
 

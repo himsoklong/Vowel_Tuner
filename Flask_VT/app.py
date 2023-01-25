@@ -142,7 +142,7 @@ def get_probabilities(data, model='lg'):
 
     # Remove leading and trailing silences
     sound = AudioSegment.from_file(input_file)
-    trim_leading_silence = lambda x: x[detect_leading_silence(x, silence_threshold=-25):]
+    trim_leading_silence = lambda x: x[detect_leading_silence(x, silence_threshold=-20):]
     trimmed = trim_leading_silence(trim_leading_silence(sound).reverse()).reverse()
     trimmed.export(tmp_wav, format='wav', bitrate='768k')
 
