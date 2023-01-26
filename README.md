@@ -13,14 +13,14 @@ In this project involed by four students in M2 NLP:
 
 ## Repository structure
 - [`README.md`](README.md): this file contain all important information for our project.
-- [Articles](Articles): this folder contain all research paper which we used for literature review before we starting the project.
-- [Code](Code): this foler contain all python code which we used for our experiment and web application.
-- [Flask_VT](Flask_VT): this folder is for our web application. it contain python and javascript code for web app.
-- [models](models): this folder contain 2 main models which are neural network and rule-based model.
-- [presentation](presentations): In this folder, there are all our slide which we presented every session.
-- [report](report): this folder, it contain our final report. if you want to check on report on overleaf. please click [here](https://www.overleaf.com/read/xqkbxvckrjmb)
-- [requirements.txt](requirements.txt): this file contain all library you need to install in other to run our code even the web application.
-- [Demo.mp4](Demo.mp4): this is a short video demo about our web application which based on our model.
+- [`Articles`](Articles): this folder contain all research paper which we used for literature review before we starting the project.
+- [`Code`](Code): this foler contain all python code which we used for our experiment and web application.
+- [`Flask_VT`](Flask_VT): this folder is for our web application. it contain python and javascript code for web app.
+- [`models`](models): this folder contain 2 main models which are neural network and rule-based model.
+- [`presentation`](presentations): In this folder, there are all our slide which we presented every session.
+- [`report`](report): this folder, it contain our final report. if you want to check on report on overleaf. please click [here](https://www.overleaf.com/read/xqkbxvckrjmb)
+- [`requirements.txt`](requirements.txt): this file contain all library you need to install in other to run our code even the web application.
+- [`Demo.mp4`](Demo.mp4): this is a short video demo about our web application which based on our model.
 
 ## Dataset
 Since we train our model based on corpus which we record form French native speakers. If you want to get access to dataset. please contact the owner.
