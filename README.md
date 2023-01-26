@@ -23,7 +23,7 @@ In this project involed by four students in M2 NLP:
 - [Demo.mp4](Demo.mp4): this is a short video demo about our web application which based on our model.
 
 ## Dataset
-Since we train our model based on corpus which we record for native french speaker. If you want to get access to dataset. please contact the owner.
+Since we train our model based on corpus which we record form French native speakers. If you want to get access to dataset. please contact the owner.
 ### L1:
 1. [CFPP2000: Parisian French corpus](https://cocoon.huma-num.fr/exist/crdo/meta/cocoon-8bc96a4e-9899-30e4-99be-c72d216eb38b) (done)
 2. [MPF: Multicultural Parisian French corpus](https://www.ortolang.fr/market/corpora/mpf/) (need request)
