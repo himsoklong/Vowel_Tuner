@@ -9,7 +9,15 @@ In this project involed by four students in M2 NLP:
 - Jorge VASQUEZ-MERCADO
 
 ## Abstract
-
+In this project, we aim to create a tool that can help learners of French to improve their pronunciation
+of French vowels. This was done by creating an application that allows users to record vowels. A
+classifier then determines whether the vowel is pronounced correctly or not. If the pronunciation
+is incorrect, the user is provided with personalized feedback. In order to find a good classifier, we
+implemented two approaches: a linguistic one, based on formant extraction, and a deep learning one,
+based on mel-spectrograms and using a convolutional neural network architecture. After initially
+testing both models on the All Vowels corpus, consisting of 5,755 vowels, we built a web application
+and tested it in real-life conditions. The linguistic model proved more robust to real-life recording
+conditions and achieved good performance in most cases.
 
 ## Repository structure
 - [`README.md`](README.md): this file contain all important information for our project.
