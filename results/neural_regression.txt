@@ -1,40 +1,3 @@
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*128, 10) [1,193,300]
-Untrimmed, SGD(0.01), 50 epochs: 61.34 @6
-To redo (black/white padding)
-
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Drop(0.3) → Full(32*29*128, 10) [1,193,300]
-Untrimmed, SGD(0.01), 50 epochs: 61.34 @11
-
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Drop(0.3) → Full(32*29*128, 64) → Full(64, 10) [7,607,690]
-Untrimmed, SGD(0.01), 50 epochs: 66.39 @10/15
-
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Drop(0.3) → Full(32*29*70, 64) → Full(64, 10) [4,162,954]
-Trimmed, SGD(0.01), 50 epochs: 81.51 @6
-
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*70, 64) → Full(64, 10) [4,162,954]
-Trimmed, SGD(0.01), 50 epochs: 80.67 @11
-
-
-After dataset update:
-
-[C3M3C3M3F64F10-SGD]
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*56, 64) → Full(64, 10) [5,053,834]
-Trimmed, SGD(0.01), 15 epochs: 83.50@4/9, loss ~ 600
-Trimmed/fixed, SGD(0.01), 15 epochs: 72.94@53, loss ~ 60
-
-[C3M3C3M3D3F64F10-SGD]
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Dropout(0.3) → Full(32*29*56, 64) → Full(64, 10) [5,053,834]
-Trimmed, SGD(0.01), 15 epochs: 80.79@9, loss ~ 600
-
-[C3M3C3M3F10-SGD]
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*56, 10) [793,610]
-Trimmed, SGD(0.01), 15 epochs: 81.03@14, loss ~ 130
-
-[C3M3C3M3F64F10-AW]
-(1, 16, 3) → Relu → Max(3) → (16, 32, 3) → Relu → Max(3) → Full(32*29*56, 64) → Full(64, 10) [5,053,834]
-Trimmed, AdamW(0.01), 11 epochs: No progress (loss ↑↓)
-
-
 This file describes the results of experiments in which a neural regression model is fed with melspectrograms of words, and it has to predict the position of the vowel in the file. For each pair of lines, the results are described as such:
 ---
 Model architecture (unlabeled layers represent convolutional layers with their number of output channels, kernel size and padding [default = none], Full represents full-connected layers with their output size and Max represents max pooling layers with their kernel size) [Number of parameters]
@@ -96,11 +59,8 @@ MSELoss, SGD(0.01) + Plateau, 50 epochs: 0.2387/0.2414 (45) [Total test MSE: 1.0
 BCELoss, SGD(0.01) + Plateau, 50 epochs: 34.0201/34.2751 (30) [Total test MSE: 0.8479]
 
 (16, 3, valid) → Dropout(0.1) → Relu → Max(2) → (32, 3, valid) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
-BCELoss, AdamW(0.001) + Plateau, 50 epochs: 33.9180/34.1596 (30) [Total test MSE: 0.8670]
-
-(16, 3, valid) → Dropout(0.1) → Relu → Max(2) → (32, 3, valid) → Dropout(0.2) → Relu → Max(2) → Full(64) → Dropout(0.5) → Relu → Full(32) → Dropout(0.5) → Relu → Full(2) [376,258]
 BCELoss, AdamW(0.001) + Plateau, 30 epochs: 33.9321/34.2134 (30) [Total test MSE: 0.6937]
 
 
 Same architecture for classification (last layer: Full(10)) [192,202]
-Same parameters, 15 epochs: Loss: 0.0247, Test acc: 97.0874%
+Same parameters, 15 epochs: Loss: 0.0247, Test acc: 94.5946%
