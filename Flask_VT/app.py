@@ -111,7 +111,6 @@ def upload():  # Standard module
     if isinstance(pred, str):
         return jsonify(error=pred)
 
-    data = json.loads(data)
     des_vowel = data['des_vowel']
     final_vowel = np.argmax(pred)
     final_confidence = pred[0][final_vowel]  # Best score

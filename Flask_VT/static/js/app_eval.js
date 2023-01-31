@@ -191,7 +191,7 @@ function shuffle(array) { // Courtesy of StackOverflow, shuffles an array
 
 function welcomeClick() { // Make sure the user selected a gender
     let gender = $("#gender :selected").text();
-    if (gender !== 'Select your gender') {
+    if (gender !== 'Choisissez votre genre') {
         speakerGender = gender;
         changeTab('vowel_recording');
         currentSeries = shuffle(Object.keys(vowel_dict)); // Select a random vowel order
