@@ -1,4 +1,4 @@
-# Vowel_Tuner
+# Vowel Tuner
 This is the respository for the 2022-2023 Software Project (UE905 EC1) at IDMC (Nancy), under the supervision of Ajinkya KULKARNI, Esteban Marquer and Prof. Miguel Couceiro. The main objective of this project is building an application to help French learners to improve thier pronunciation. 
 
 ### Team members
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 .
 ## Usage
 1. To see our development process, you can check our code in the `Code` directory.
-you can run them from the terminal:
+You can run them from the terminal:
 ```sh
 jupyter notebook
 ```
