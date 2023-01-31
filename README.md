@@ -22,8 +22,31 @@ conditions and achieved good performance in most cases.
 ## Repository structure
 - [`README.md`](README.md): this file contains important information for our project (you are here!).
 - [`Articles`](Articles): this folder contain all the research papers we used for the literature review at the start of the project.
-- [`Code`](Code): this folder contains the Python code we used for our experiments and web application, in the form of Jupyter notebooks.
-- [`Flask_VT`](Flask_VT): this folder is for our web application. It contains Python and JavaScript code for the web application. The Python code is based on `Code\Demo.ipynb`
+- [`Code`](Code): this folder contains the Python code we used for our experiments and web application, in the form of Jupyter notebooks. In order of use:
+    - [`examples`](Code/examples) contains sample recordings.
+    
+    The following are auxillary/working files:
+    - [`vowel_plot.ipynb`](Code/vowel_plot.ipynb) generates plots of vowels in formant space in our informal corpus.
+    - [`extract_formant.ipynb`](Code/extract_formant.ipynb) extracts formants from a given audio file.
+    - [`Formant_vowel_prediction.ipynb`](Code/Formant_vowel_prediction.ipynb) predicts a vowel from a set of formants, using reference formant values
+    - [`vowel_feedback_function.ipynb`](Code/vowel_feedback_function.ipynb) generates feedback based on a perceived vs desired vowel.
+    - [`Audio_Spectrogram.ipynb`](Code/Audio_Spectrogram.ipynb) generates standard and mel-spectrograms from a given input file.
+    
+    The following are the full implementation of our models:
+    - [`linguistic_model_reference_formants.ipynb`](Code/linguistic_model_reference_formants.ipynb) implements the first full prediction model using reference formants. This approach was later abandoned.
+    - [`all_vowel_extract.ipynb`](Code/all_vowel_extract.ipynb) extracts full words or vowels from the input dataset and stores them into individual files. Information about the vowel's quality, position and speaker are encoded into the file name.
+    - [`generate_mel_spectrograms.ipynb`](Code/generate_mel_spectrograms.ipynb) generates all mel-spectrogram images from a given dataset.
+    - [`audio_crop.ipynb`](Code/audio_crop.ipynb) contains the implementation of the neural vowel extractor, which takes as input the full recording of a word (with possible leading/trailing silence) and outputs a cropped vowel only.
+    - [`linguistic_model.ipynb`](Code/linguistic_model.ipynb) implements the final formant-based classifiers, and compares their results.
+    - [`neural_network.ipynb`](Code/neural_network.ipynb) implements the final neural-based classifier, and displays its results.
+    - [`Demo.ipynb`](Code/Demo.ipynb) combines all the elements above to get a vowel prediction from a full recording based on the chosen model.
+    - [`results_exploration.ipynb`](Code/results_exploration.ipynb) generates quantitative data from the results of the final experimental setup.
+    
+- [`Flask_VT`](Flask_VT): this folder is for our web application. It contains Python and JavaScript code for the web application. In particular:
+    - [`models`](Flask_VT/models) contains the model files (same as in [`models`](models))
+    - [`static`](Flask_VT/static) contains the front-end part of the application, such as `app.js` (final application) and `app_eval.js` (application module)
+    - [`templates`](Flask_VT/templates) contains the HTML pages of the application, such as `index.html` (final interface), `eval.html` (application module) and `privacy.html` (Privacy policy)
+    - [`app.py`](Flask_VT/app.py) and [`app_eval.py`](Flask_VT/app_eval.py) contain the Python code for the final application, based on `Code\Demo.ipynb`
 - [`models`](models): This folder contains the binary files for our 2 main models, the neural network and linguistic models. The linguistic model is not included due to size limitations, but can be re-trained and saved using `Code\linguistic_model.ipynb`
 - [`presentation`](presentations): In this folder are all the slides we presented during regular class sessions.
 - [`report`](report): this folder contains our final report. If you want to check it on Overleaf. please click [here](https://www.overleaf.com/read/xqkbxvckrjmb)
