@@ -1,9 +1,14 @@
+// Recorderjs variables
 let audioContext;
 let recorder;
 let audioStream;
 let audioInit;
 let audioBlob;
+
+// Interface variables
 let currentTab;
+
+// Vowel prediction variables
 let speakerGender;
 let previousPhoneme;
 let wordsEndWithR;
@@ -94,6 +99,7 @@ const _AudioFormat = "audio/wav";
 const seriesLength = 10;
 
 function Initialize() {
+    // Initialization function for AudioRecorder
     try {
         // Monkeypatch for AudioContext, getUserMedia and URL
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -112,6 +118,7 @@ function Initialize() {
 }
 
 function startRecording() {
+    // Display "Speak now" interface and hide controls
     $("#error-banner").hide();
     $("#wait").show();
     $("#speak").hide();
@@ -143,7 +150,7 @@ function startRecording() {
 }
 
 function stopRecording() {
-    $("#wait").hide();
+    $("#wait").hide(); // Hide "Speak now" interface and restore controls
     $("#speak").hide();
 
     recorder && recorder.stop();
@@ -169,7 +176,7 @@ function changeTab(newTab) {
 }
 
 
-function shuffle(array) {
+function shuffle(array) { // Courtesy of StackOverflow, shuffles an array
   const newArray = [...array]
   const length = newArray.length
 
@@ -182,13 +189,13 @@ function shuffle(array) {
   return newArray
 }
 
-function welcomeClick() {
+function welcomeClick() { // Make sure the user selected a gender
     let gender = $("#gender :selected").text();
     if (gender !== 'Select your gender') {
         speakerGender = gender;
         changeTab('vowel_recording');
-        currentSeries = shuffle(Object.keys(vowel_dict));
-        for (let vowel of currentSeries) {
+        currentSeries = shuffle(Object.keys(vowel_dict)); // Select a random vowel order
+        for (let vowel of currentSeries) { // For each vowel, get a random word
             const word_arr = vowel_dict[vowel][2];
             wordSeries.push(word_arr[Math.floor(Math.random() * word_arr.length)])
             vowelSeries.push(vowel);
@@ -202,48 +209,46 @@ function welcomeClick() {
 
 function nextVowel() {
     $("#processing").hide();
-    if (seriesIndex < totalSeries * seriesLength + seriesLength - 1) {
+    if (seriesIndex < totalSeries * seriesLength + seriesLength - 1) { // If the series isn't over
         seriesIndex += 1;
-        const word = wordSeries[seriesIndex];
-        $("#cnt").html(seriesIndex % seriesLength + 1);
-        $("#word-id").html(word[0]);
+        const word = wordSeries[seriesIndex]; // Get the next word
+        $("#cnt").html(seriesIndex % seriesLength + 1); // Update count
+        $("#word-id").html(word[0]); // Update word text
         previousPhoneme = word[3];
         wordsEndWithR = word[4];
-    } else {
+    } else { // End of series
         totalSeries += 1;
-        $("#series-cnt").html(totalSeries);
+        $("#series-cnt").html(totalSeries); // Move to prediction interface
         $("#predict-div").show();
         changeTab('series_done');
     }
 }
 
 
-function red(txt) {
+function red(txt) { // Makes text red
     return "<span style='color: #8B0000;'>" + txt + "</span>";
 }
 
 
-function green(txt) {
+function green(txt) { // Makes text dark green
     return "<span style='color: #006400;'>" + txt + "</span>";
 }
 
 
 function displayResults() {
     changeTab("results");
-    $("#data-nn").html(wordSeriesProbasNN);
-    $("#data-lg").html(wordSeriesProbasLG);
     let lgCorrect = 0;
     let nnCorrect = 0;
     let total = 0;
 
-    for (let i in vowelSeries) {
+    for (let i in vowelSeries) { // For each vowel...
         let tr = "<tr>";
-        tr += "<td>" + i + "</td>";
+        tr += "<td>" + i + "</td>"; // Display count, word and expected vowel
         tr += "<td>" + wordSeries[i][0] + "</td>";
         tr += "<td>" + vowelSeries[i] + "</td>";
         total += 1;
 
-        let txt = wordSeriesPredNN[i];
+        let txt = wordSeriesPredNN[i]; // Display NN prediction
         if (txt === vowelSeries[i]) {
             txt = green(txt);
             nnCorrect += 1;
@@ -252,7 +257,7 @@ function displayResults() {
         }
         tr += "<td>" + txt + "</td>";
 
-        txt = wordSeriesPredLG[i];
+        txt = wordSeriesPredLG[i]; // Display LG prediction
         if (txt === vowelSeries[i]) {
             txt = green(txt);
             lgCorrect += 1;
@@ -261,21 +266,22 @@ function displayResults() {
         }
         tr += "<td>" + txt + "</td>";
 
-        tr += "<td>";
+        tr += "<td>"; // Display list of NN probabilities
         for (const val of wordSeriesProbasNN[i]) {
             tr += val.toFixed(4) + ", ";
         }
-        tr = tr.slice(0, -2)
+        tr = tr.slice(0, -2) // Remove final ", "
         tr += "</td>";
-        tr += "<td>";
+        tr += "<td>"; // Display list of LG probabilities
         for (const val of wordSeriesProbasLG[i]) {
             tr += val.toFixed(4) + ", ";
         }
-        tr = tr.slice(0, -2)
+        tr = tr.slice(0, -2) // Remove final ", "
         tr += "</td>";
         tr += "</tr>";
         $("#result-table").append(tr);
     }
+    // Add final row with gender and accuracy
     $("#result-table").append("<tr><td>Total</td><td>"
         + speakerGender[0] + "</td><td></td><td>"
         + (100*nnCorrect/total).toFixed(2) + " %</td><td>"
@@ -284,10 +290,10 @@ function displayResults() {
 
 
 function predictionDone(data) {
-    if ("error" in data) {
+    if ("error" in data) { // Show error message
         $("#error-message").html(data["error"]);
         $("#error-banner").show();
-    } else {
+    } else { // Store probabilities and prediction, and move to next vowel
         wordSeriesProbasNN.push(data["probas_nn"]);
         wordSeriesPredNN.push(data["pred_nn"]);
         wordSeriesProbasLG.push(data["probas_lg"]);
@@ -308,7 +314,7 @@ function blobToBase64(blob) {
     });
 }
 
-$(function() {
+$(function() { // Initialization
     audioInit = false;
 
     currentTab = 'welcome';
@@ -323,6 +329,7 @@ $(function() {
 
     changeTab(currentTab);
 
+    // Set up event listeners
     $("#start-btn").click(startRecording);
     $("#stop-btn").click(stopRecording);
     $("#welcome-btn").click(welcomeClick);
@@ -331,11 +338,12 @@ $(function() {
     $("#gender").change(function() { $("#no_gender").hide(); })
     $("#cnt-total").html(seriesLength);
 
+    // On clicking the prediction button...
     $("#predict-btn").click(async function () {
-        $("#predict-div").hide();
+        $("#predict-div").hide(); // Show waiting interface
         $("#processing").show();
-        const b64 = await blobToBase64(audioBlob);
-        fetch('/predict', {
+        const b64 = await blobToBase64(audioBlob); // Wait for audio conversion
+        fetch('/predict', { // Send data to server
             method: "POST",
             body: JSON.stringify({
                 'audio': b64,
@@ -345,7 +353,7 @@ $(function() {
                 'des_vowel': currentSeries[seriesIndex]
             })
         }).then(function (response) {
-            return response.json();
-        }).then(predictionDone);
+            return response.json(); // Wait for prediction
+        }).then(predictionDone); // Switch to prediction screen
     })
 });

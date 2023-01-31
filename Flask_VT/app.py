@@ -77,6 +77,7 @@ idx2key = ['2', '9', 'a', 'a~', 'e', 'E', 'i', 'O', 'o', 'o~', 'u', 'U~+', 'y'] 
 valid = [0, 1, 2, 4, 5, 6, 7, 8, 10, 12]  # Vowels we consider here (depends on the classifier)
 all_phonemes = ['l', 'm', 'p', 's', 't', 't1']  # Phonemes that can be before the vowel
 
+# Locations for the temporary output files
 tmp_wav = 'tmp_process.wav'
 tmp_wav_2 = 'tmp_process_trimmed.wav'
 max_w = 31  # Image width to resize to
@@ -84,12 +85,15 @@ max_w_2 = 20
 
 
 @app.route('/predict', methods=['POST'])
-def predict():
+def predict():  # Evaluation module
     data = json.loads(request.data)
-    pred = get_probabilities(data, model='all')
+    pred = get_probabilities(data, model='all')  # Get all probabilities
+
+    # On error, return the error
     if isinstance(pred, str):
         return jsonify(error=pred)
 
+    # Else, return all probabilities
     pred_nn, pred_lg = pred
     return jsonify(
         probas_nn=pred_nn[0].tolist(),
@@ -100,9 +104,9 @@ def predict():
 
 
 @app.route('/upload', methods=['POST'])
-def upload():
+def upload():  # Standard module
     data = json.loads(request.data)
-    pred = get_probabilities(data)
+    pred = get_probabilities(data)  # Get all probabilities
 
     if isinstance(pred, str):
         return jsonify(error=pred)
@@ -113,7 +117,7 @@ def upload():
     final_confidence = pred[0][final_vowel]  # Best score
     final_vowel = idx2key[valid[final_vowel]]  # Actual prediction
 
-    print('Vowel ', 'Confidence')
+    print('Vowel ', 'Confidence')  # Console output
     print('-' * 25)
     for i in range(len(valid)):
         vowel = idx2key[valid[i]]
@@ -129,15 +133,16 @@ def upload():
 
 
 def get_probabilities(data, model='lg'):
+    # Get metadata
     speaker_gender = 'f' if data['gender'].startswith('F') else 'm'
-    audio = data['audio'][22:]
+    audio = data['audio'][22:]  # Get rid of application data
     previous_phoneme = data['prev_phoneme']
     word_ends_with_r = data['r_word']
     input_file = "input.wav"
 
-    audio = base64.b64decode(audio)
+    audio = base64.b64decode(audio)  # Decode the audio file
 
-    with open(input_file, 'wb') as f:
+    with open(input_file, 'wb') as f:  # Write the audio to file
         f.write(audio)
 
     # Remove leading and trailing silences

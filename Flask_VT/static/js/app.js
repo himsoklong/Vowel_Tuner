@@ -1,9 +1,14 @@
+// Recorderjs variables
 let audioContext;
 let recorder;
 let audioStream;
 let audioInit;
 let audioBlob;
+
+// Interface variables
 let currentTab;
+
+// Vowel variables
 let speakerGender;
 let previousPhoneme;
 let wordsEndWithR;
@@ -84,7 +89,7 @@ let vowel_dict = {
 
 const _AudioFormat = "audio/wav";
 
-function Initialize() {
+function Initialize() { // Initialize AudioContext
     try {
         // Monkeypatch for AudioContext, getUserMedia and URL
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -103,9 +108,9 @@ function Initialize() {
 }
 
 function startRecording() {
-    $("#wait").show();
+    $("#wait").show(); // Show waiting interface until the AudioContext is ready
     $("#speak").hide();
-    $("#start-btn").hide();
+    $("#start-btn").hide(); // Remove controls
     $("#stop-btn").show();
     $("#predict-div").hide();
 
@@ -125,7 +130,7 @@ function startRecording() {
         recorder && recorder.record();
         console.log('Recording...');
 
-        $("#wait").hide();
+        $("#wait").hide(); // Show "Speak now" interface
         $("#speak").show();
     }, function (e) {
         console.error('No live audio input: ' + e);
@@ -133,7 +138,7 @@ function startRecording() {
 }
 
 function stopRecording() {
-    $("#wait").hide();
+    $("#wait").hide(); // Hide "Speak now" interface
     $("#speak").hide();
 
     recorder && recorder.stop();
@@ -141,7 +146,7 @@ function stopRecording() {
 
     audioStream.getAudioTracks()[0].stop();
 
-    $("#start-btn").show();
+    $("#start-btn").show(); // Restore controls
     $("#stop-btn").hide();
     $("#predict-div").show();
 
@@ -158,7 +163,7 @@ function changeTab(newTab) {
     scroll();
 }
 
-function welcomeClick() {
+function welcomeClick() { // Make sure the user selected a gender
     let gender = $("#gender :selected").text();
     if (gender !== 'Select your gender') {
         speakerGender = gender;
@@ -171,10 +176,13 @@ function welcomeClick() {
 function vowelClick(newVowel) {
     changeTab('vowel_recording');
 
+    // Instantiate text baesd on the chosen vowel
     vowel = newVowel;
     const text_vowel = vowel_dict[vowel][0];
     const ipa_vowel = vowel_dict[vowel][1];
     const word_arr = vowel_dict[vowel][2];
+
+    // Choose a random word and update text
     const word = word_arr[Math.floor(Math.random()*word_arr.length)]
     const word_id = word[0];
     const word_txt = word[1];
@@ -190,32 +198,38 @@ function vowelClick(newVowel) {
 }
 
 function predictionDone(data) {
-    $("#predict-div").show();
+    $("#predict-div").show(); // Prediction is over, move to prediction screen
     $("#processing").hide();
     console.log(data);
     if ("error" in data) {
-        $("#error-message").html(data["error"]);
+        $("#error-message").html(data["error"]); // If an error occurs
         changeTab('vowel_prediction_err');
     } else {
         const textVowel = vowel_dict[vowel][0];
         let predicted_vowel = data['predicted_vowel'];
-        if (predicted_vowel === vowel) {
+        if (predicted_vowel === vowel) { // Correct vowel: display confidence
             changeTab('vowel_prediction_good');
             $("#vowel-id-2").html(textVowel);
             $("#score-good").html(+data['confidence'].toFixed(4)*100 + "%");
-            vowel_dict[predicted_vowel][5] += 1;
-        } else {
+            vowel_dict[predicted_vowel][5] += 1; // Count vowel as correct
+        } else { // Bad vowel: display confidence
             changeTab('vowel_prediction_bad');
             $("#vowel-id-3").html(textVowel);
             $("#vowel-id-4").html(textVowel);
+
+            // Show audio and video feedback
             $('#video').attr('src', '../video/' + vowel + '.mp4'); // TODO test
             //$("#video")[0].load(); // TODO test
+
+            // Display information about the predicted vowel
             let registered_vowel = vowel_dict[predicted_vowel];
             $("#reg1").html(registered_vowel[0]);
             $("#reg2").html(registered_vowel[1]);
             $("#reg3").html(registered_vowel[3]);
             $("#reg4").html(registered_vowel[4]);
             $("#score-bad").html((+data['confidence']*100).toFixed(2) + "%");
+
+            // Display feedback
             $("#feedback").html(data['feedback']);
             if ("add_feedback" in data && data["add_feedback"]) {
                 $("#feedback-2").html(data['add_feedback']);
@@ -224,9 +238,11 @@ function predictionDone(data) {
                 $("#feedback-2-div").hide();
             }
         }
-        vowel_dict[vowel][6] += 1;
-        $("#reg5-" + vowel).hide();
-        $("#reg6-" + vowel).show();
+        vowel_dict[vowel][6] += 1; // Count pronounced vowles
+        $("#reg5-" + vowel).hide(); // Remove empty progress bar
+        $("#reg6-" + vowel).show(); // Show progress bar
+
+        // Update progress bar
         const vowelBar = $("#reg7-" + vowel);
         vowelBar.show();
         const progress = 100*vowel_dict[vowel][5] / vowel_dict[vowel][6];
@@ -248,13 +264,13 @@ function replayAudio() {
     audio.play().then(r => console.log('Replayed!'));
 }
 
-function playReferenceAudio() { // TODO test
+function playReferenceAudio() {
     const audio = new Audio('../wav/' + vowel + '.wav');
     audio.play().then(r => console.log('Replayed!'));
 }
 
 // https://stackoverflow.com/a/61744566/2700737
-function blobToBase64(blob) {
+function blobToBase64(blob) { // Convert blob to base64 before sending it
     return new Promise((resolve) => {
         const reader = new FileReader();
         reader.readAsDataURL(blob);
@@ -265,11 +281,13 @@ function blobToBase64(blob) {
 }
 
 $(function() {
+    // Initialization function
     audioInit = false;
 
     currentTab = 'welcome';
     changeTab(currentTab);
 
+    // Set up all event listeners
     $("#start-btn").click(startRecording);
     $("#stop-btn").click(stopRecording);
     $("#welcome-btn").click(welcomeClick);
@@ -284,6 +302,7 @@ $(function() {
     $("#listen-ref-2-btn").click(playReferenceAudio);
     $("#vowel-selection-btn").click(function() { changeTab("vowel_selection"); });
 
+    // Display correct text for each vowel in the vowel selection screen
     for (let vowel of Object.keys(vowel_dict)) {
         $("#" + vowel + "-btn").click(function () { vowelClick(vowel); })
         $("#reg1-" + vowel).html(vowel_dict[vowel][0]);
@@ -292,11 +311,12 @@ $(function() {
         $("#reg4-" + vowel).html(vowel_dict[vowel][4]);
     }
 
+    // When clicking "Rate my vowel"...
 	$("#predict-btn").click(async function () {
-        $("#predict-div").hide();
+        $("#predict-div").hide(); // Show "Processing..." screen
         $("#processing").show();
-        const b64 = await blobToBase64(audioBlob);
-        fetch('/upload', {
+        const b64 = await blobToBase64(audioBlob); // Wait for audio file
+        fetch('/upload', { // Upload to server
             method: "POST",
             body: JSON.stringify({
                 'audio': b64,
@@ -305,8 +325,8 @@ $(function() {
                 'prev_phoneme': previousPhoneme,
                 'des_vowel': vowel
             })
-        }).then(function (response) {
+        }).then(function (response) { // Wait for response
             return response.json();
-        }).then(predictionDone);
+        }).then(predictionDone); // Callback
     })
 });
