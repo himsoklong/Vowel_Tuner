@@ -7,7 +7,7 @@ import numpy as np
 import parselmouth
 import torch
 import torch.nn as nn
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory, url_for, send_file
 from joblib import load
 from parselmouth import praat
 from pydub import AudioSegment
@@ -101,6 +101,11 @@ def predict():  # Evaluation module
         probas_lg=pred_lg[0].tolist(),
         pred_lg=idx2key[valid[np.argmax(pred_lg)]]
     )
+
+
+@app.route('/audio/<path:filename>', methods=['GET'])
+def read_audio(filename):  # Get audio file
+    return send_from_directory('static/audio', filename, mimetype="audio/wav", as_attachment=False)
 
 
 @app.route('/upload', methods=['POST'])

@@ -11,6 +11,7 @@ let currentTab;
 // Vowel variables
 let speakerGender;
 let previousPhoneme;
+let word_id;
 let wordsEndWithR;
 let vowel;
 let vowel_dict = {
@@ -176,7 +177,7 @@ function welcomeClick() { // Make sure the user selected a gender
 function vowelClick(newVowel) {
     changeTab('vowel_recording');
 
-    // Instantiate text baesd on the chosen vowel
+    // Instantiate text based on the chosen vowel
     vowel = newVowel;
     const text_vowel = vowel_dict[vowel][0];
     const ipa_vowel = vowel_dict[vowel][1];
@@ -184,7 +185,7 @@ function vowelClick(newVowel) {
 
     // Choose a random word and update text
     const word = word_arr[Math.floor(Math.random()*word_arr.length)]
-    const word_id = word[0];
+    word_id = word[0];
     const word_txt = word[1];
     const word_ipa = word[2];
     previousPhoneme = word[3];
@@ -209,12 +210,14 @@ function predictionDone(data) {
         let predicted_vowel = data['predicted_vowel'];
         if (predicted_vowel === vowel) { // Correct vowel: display confidence
             changeTab('vowel_prediction_good');
-            $("#vowel-id-2").html(textVowel);
+            $("#vowel-id-2-m").html(word_id);
+            $("#vowel-id-2-f").html(word_id);
             $("#score-good").html(+data['confidence'].toFixed(4)*100 + "%");
             vowel_dict[predicted_vowel][5] += 1; // Count vowel as correct
         } else { // Bad vowel: display confidence
             changeTab('vowel_prediction_bad');
-            $("#vowel-id-3").html(textVowel);
+            $("#vowel-id-3-m").html(word_id);
+            $("#vowel-id-3-f").html(word_id);
             $("#vowel-id-4").html(textVowel);
 
             // Show audio and video feedback
@@ -238,7 +241,7 @@ function predictionDone(data) {
                 $("#feedback-2-div").hide();
             }
         }
-        vowel_dict[vowel][6] += 1; // Count pronounced vowles
+        vowel_dict[vowel][6] += 1; // Count pronounced vowels
         $("#reg5-" + vowel).hide(); // Remove empty progress bar
         $("#reg6-" + vowel).show(); // Show progress bar
 
@@ -258,15 +261,50 @@ function predictionDone(data) {
     }
 }
 
-function replayAudio() {
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-    audio.play().then(r => console.log('Replayed!'));
+
+function disableMediaButtons() {
+    // Disable buttons to not have multiple audio files playing at once
+    $("#listen-self-btn").prop('disabled', true);
+    $("#listen-self-2-btn").prop('disabled', true);
+    $("#listen-ref-btn-f").prop('disabled', true);
+    $("#listen-ref-btn-m").prop('disabled', true);
+    $("#listen-ref-2-btn-f").prop('disabled', true);
+    $("#listen-ref-2-btn-m").prop('disabled', true);
 }
 
-function playReferenceAudio() {
-    const audio = new Audio('../wav/' + vowel + '.wav');
-    audio.play().then(r => console.log('Replayed!'));
+
+function enableMediaButtons() {
+    $("#listen-self-btn").prop('disabled', false);
+    $("#listen-self-2-btn").prop('disabled', false);
+    $("#listen-ref-btn-f").prop('disabled', false);
+    $("#listen-ref-btn-m").prop('disabled', false);
+    $("#listen-ref-2-btn-f").prop('disabled', false);
+    $("#listen-ref-2-btn-m").prop('disabled', false);
+}
+
+
+function replayAudio() {
+    disableMediaButtons();
+
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+
+    // Restore buttons after end of audio
+    audio.play().then(function() {
+        setTimeout(enableMediaButtons, audio.duration * 1000);
+    });
+}
+
+function playReferenceAudio(gender) {
+    disableMediaButtons();
+
+    // Load corresponding reference file from server
+    const audio = new Audio('audio/' + gender + '_' + previousPhoneme + vowel + (wordsEndWithR ? 'r' : '') + '.wav');
+
+    // Restore buttons after end of audio
+    audio.play().then(function() {
+        setTimeout(enableMediaButtons, audio.duration * 1000);
+    });
 }
 
 // https://stackoverflow.com/a/61744566/2700737
@@ -297,9 +335,11 @@ $(function() {
     $("#record-again-2-btn").click(function() { changeTab("vowel_recording"); $("#predict-div").hide(); })
     $("#select-again-2-btn").click(function() { changeTab("vowel_selection"); $("#predict-div").hide(); })
     $("#listen-self-btn").click(replayAudio);
-    $("#listen-ref-btn").click(playReferenceAudio);
+    $("#listen-ref-btn-f").click(function() { playReferenceAudio('f'); })
+    $("#listen-ref-btn-m").click(function() { playReferenceAudio('m'); })
     $("#listen-self-2-btn").click(replayAudio);
-    $("#listen-ref-2-btn").click(playReferenceAudio);
+    $("#listen-ref-2-btn-f").click(function() { playReferenceAudio('f'); })
+    $("#listen-ref-2-btn-m").click(function() { playReferenceAudio('m'); })
     $("#vowel-selection-btn").click(function() { changeTab("vowel_selection"); });
 
     // Display correct text for each vowel in the vowel selection screen
