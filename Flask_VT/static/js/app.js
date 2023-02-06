@@ -220,9 +220,25 @@ function predictionDone(data) {
             $("#vowel-id-3-f").html(word_id);
             $("#vowel-id-4").html(textVowel);
 
-            // Show audio and video feedback
-            $('#video').attr('src', '../video/' + vowel + '.mp4'); // TODO test
-            //$("#video")[0].load(); // TODO test
+            // Load video from server and show as feedback
+
+            /*const video = $('#video');
+            const reader = new FileReader();
+            reader.onload = (function(video) {
+                return function(e) {
+                    video.src = e.target.result;
+                };
+            })(video);
+            //reader.addEventListener('load', function() {
+                //video.play()
+            //});
+
+            reader.readAsDataURL('video/' + speakerGender[0].toLowerCase() + '_'
+                + vowel + (vowel === 'O' || vowel === 'E' ? '_' : '') + '.mp4');*/
+
+            $('#video').attr('src', 'video/' + speakerGender[0].toLowerCase() + '_'
+                + vowel + (vowel === 'O' || vowel === 'E' ? '_' : '') + '.mp4');
+            $("#video")[0].load();
 
             // Display information about the predicted vowel
             let registered_vowel = vowel_dict[predicted_vowel];

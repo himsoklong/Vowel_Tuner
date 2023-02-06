@@ -108,6 +108,11 @@ def read_audio(filename):  # Get audio file
     return send_from_directory('static/audio', filename, mimetype="audio/wav", as_attachment=False)
 
 
+@app.route('/video/<path:filename>', methods=['GET'])
+def read_video(filename):  # Get video file
+    return send_from_directory('static/video', filename, mimetype="video/mp4", as_attachment=False)
+
+
 @app.route('/upload', methods=['POST'])
 def upload():  # Standard module
     data = json.loads(request.data)
