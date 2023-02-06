@@ -221,21 +221,6 @@ function predictionDone(data) {
             $("#vowel-id-4").html(textVowel);
 
             // Load video from server and show as feedback
-
-            /*const video = $('#video');
-            const reader = new FileReader();
-            reader.onload = (function(video) {
-                return function(e) {
-                    video.src = e.target.result;
-                };
-            })(video);
-            //reader.addEventListener('load', function() {
-                //video.play()
-            //});
-
-            reader.readAsDataURL('video/' + speakerGender[0].toLowerCase() + '_'
-                + vowel + (vowel === 'O' || vowel === 'E' ? '_' : '') + '.mp4');*/
-
             $('#video').attr('src', 'video/' + speakerGender[0].toLowerCase() + '_'
                 + vowel + (vowel === 'O' || vowel === 'E' ? '_' : '') + '.mp4');
             $("#video")[0].load();
